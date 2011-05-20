@@ -2,8 +2,9 @@ package instagrAS3.data.items
 {
 	/**
 	 * ...
-	 * @author 
+	 * @author pbordachar
 	 */
+	
 	public class Location
 	{
 		private var _id:int;

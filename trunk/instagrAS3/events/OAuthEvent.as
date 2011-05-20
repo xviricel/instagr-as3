@@ -2,6 +2,11 @@ package instagrAS3.events
 {
 	import flash.events.Event;
 	
+	/**
+	 * ...
+	 * @author tiago.dias
+	 */
+	
 	public class OAuthEvent extends Event
 	{
 		public static const SUCCESS		:String 	= "success";

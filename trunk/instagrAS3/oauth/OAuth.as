@@ -19,15 +19,14 @@ package instagrAS3.oauth
 	
 	/**
 	 * 
-	 * 
 	 * @author tiago.dias
+	 * @modifier pbordachar 
 	 * 
 	 */	
 	public class OAuth extends EventDispatcher
 	{
 		private static const OAUTHURL :String = "https://api.instagram.com/oauth/authorize/";
-		//private static const ACCESSTOKENURL	:String	= "https://api.instagram.com/oauth/access_token";	
-		
+			
 		private var _sharedObj				:SharedObject;
 		
 		private var _consumerKey			:String;
@@ -42,19 +41,12 @@ package instagrAS3.oauth
 		private var _urlLoader				:URLLoader;
 		private var _type					:String;
 		
-				
-		/**
-		 * 
-		 * 
-		 */		
+		private var _scope:String = "basic+comments+relationships+likes" 
+		
+	
 		public function OAuth()
 		{
-			trace( "OAuth" );
-			
-			//_urlLoader = new URLLoader();
-			//_urlLoader.addEventListener( Event.COMPLETE, onDataComplete );
-			//_urlLoader.addEventListener( IOErrorEvent.IO_ERROR, handleError );
-			//_urlLoader.addEventListener( SecurityErrorEvent.SECURITY_ERROR, handleError );		
+			trace( "OAuth" );	
 		}
 		
 		/**
@@ -73,7 +65,7 @@ package instagrAS3.oauth
 			else
 			{
 				trace( "!found" )
-				var urlReq:URLRequest = new URLRequest( OAUTHURL + "?client_id=" + _consumerKey + "&redirect_uri=" +  _callbackURL + "&response_type=token" );
+				var urlReq:URLRequest = new URLRequest( OAUTHURL + "?client_id=" + _consumerKey + "&redirect_uri=" +  _callbackURL + "&response_type=token" + "&scope=" + _scope );
 				var rect:Rectangle = new Rectangle( 300, 300, 700, 500 );
 				
 				_htmlLoader	= HTMLLoader.createRootWindow( true, null, true, rect );
@@ -89,30 +81,6 @@ package instagrAS3.oauth
 		 */		
 		protected function accessCodeReceived( event:Event ):void
 		{
-			//trace( "accessCodeReceived()" );
-			//
-			//var oauthString:String = "?code=";
-			//var location:String = _htmlLoader.location;
-			//var hasOAuthCode:Boolean = location.indexOf("?code") != -1;
-			//var ind:int = location.indexOf( oauthString );
-			//
-			//trace( location );
-			//
-			//if ( hasOAuthCode )
-			//{
-				//_htmlLoader.removeEventListener( Event.COMPLETE, accessCodeReceived );
-				//
-				//_authCode = location.substr( ind + oauthString.length, location.length );
-				//_htmlLoader.stage.nativeWindow.close();
-				//_htmlLoader = null;
-				//
-				//getAccessToken();
-			//}
-			//else
-			//{
-				//dispatchEvent( new OAuthEvent( OAuthEvent.ERROR ) );
-			//}
-			
 			trace( "accessCodeReceived()" );
 			
 			var tokenString:String = "#access_token=";
@@ -142,42 +110,6 @@ package instagrAS3.oauth
 				dispatchEvent( new OAuthEvent( OAuthEvent.ERROR ) );
 			}
 		}
-		
-		/**
-		 * 
-		 * 
-		 */		
-		//private function getAccessToken():void
-		//{
-			//trace( "getAccessToken" );
-			//
-			//var url:String = ACCESSTOKENURL + "?client_id=" + _consumerKey + "&client_secret=" + _consumerSecret + "&grant_type=authorization_code" + "&redirect_uri=" + _callbackURL + "&code=" + _authCode ;
-			//
-			//trace( url );
-			//
-			//var urlRequest:URLRequest = new URLRequest( url );
-			//urlRequest.method = URLRequestMethod.POST;
-			//
-			//_urlLoader.load( urlRequest );
-		//}
-		
-		/**
-		 * 
-		 * @param event
-		 * 
-		 */		
-		//protected function onDataComplete(event:Event):void
-		//{
-			//trace( "onDataComplete" );
-			//
-			//var obj:Object = JSON.decode( event.target.data );
-			//_accessToken = obj.access_token;
-			//
-			//_sharedObj = SharedObject.getLocal("instagData");
-			//_sharedObj.data.accessToken = _accessToken;
-												//
-			//dispatchEvent( new OAuthEvent( OAuthEvent.SUCCESS ) );
-		//}
 		
 		/**
 		 * 

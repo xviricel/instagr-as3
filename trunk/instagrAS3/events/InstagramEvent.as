@@ -4,7 +4,7 @@ package instagrAS3.events
 	
 	/**
 	 * ...
-	 * @author 
+	 * @author tiago.dias
 	 */
 	
 	public class InstagramEvent extends Event

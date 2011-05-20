@@ -3,8 +3,7 @@ package instagrAS3
 	import instagrAS3.data.DataParser;
 	import instagrAS3.events.InstagramEvent;
 	import instagrAS3.oauth.OAuth;
-	
-	import com.adobe.serialization.json.JSON;
+	import instagrAS3.adobe.serialization.json.JSON;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -20,7 +19,7 @@ package instagrAS3
 	
 	/**
 	 * ...
-	 * @author 
+	 * @author pbordachar
 	 */
 	
 	public class Instagram extends EventDispatcher
@@ -51,6 +50,8 @@ package instagrAS3
 		public static const TAG_SEARCH					:String		= "tagSearch";
 		public static const TAG_MEDIA_RECENT			:String		= "tagRecent";
 		
+		public static const GEOGRAPHY_RECENT			:String		= "geographyRecent";
+		
 		
 		public function Instagram() {}
 		
@@ -73,11 +74,12 @@ package instagrAS3
 		
 		private final function requestData( url:String, type:String = "GET", args:Array = null, params:String = "" ):void
 		{
+			trace( type + " - request: " + url );
 			MonsterDebugger.trace(this, type + " - request: " + url);
 			
 			_loader = new URLLoader();
 			_loader.addEventListener( Event.COMPLETE, dataLoaded );
-			_loader.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			_loader.addEventListener( IOErrorEvent.IO_ERROR, ioErrorHandler);
 			
 			var request:URLRequest;
 			
@@ -120,23 +122,29 @@ package instagrAS3
 				request = new URLRequest( url + "?client_id=" + _oauth.consumerKey + "&client_secret=" + _oauth.consumerSecret );
 			}
 			
-			trace( request.url );
+			//trace( request.url );
 			
 			_loader.load( request );
 		}
 		
 		protected function httpStatusHandler(event:HTTPStatusEvent):void
 		{
+			trace( "httpStatusHandler" );
+			
 			MonsterDebugger.trace(this, event );
 		}
 		
 		protected function ioErrorHandler(event:IOErrorEvent):void
 		{
+			trace( "ioErrorHandler" );
+			
 			MonsterDebugger.trace(this, event );
 		}
 		
 		protected function dataLoaded(event:Event):void
 		{
+			trace( "dataLoaded" );
+			
 			MonsterDebugger.trace(this, JSON.decode( _loader.data ) );
 			
 			switch( _dataType )
@@ -152,6 +160,7 @@ package instagrAS3
 				case USER_MEDIA_RECENT:
 				case LOCATION_MEDIA_RECENT:
 				case TAG_MEDIA_RECENT:
+				case GEOGRAPHY_RECENT: // ?
 				
 					_data = DataParser.parsePhotoArray( JSON.decode( _loader.data ) );
 					break;
@@ -192,17 +201,17 @@ package instagrAS3
 		
 		protected function statusError(event:HTTPStatusEvent):void
 		{
+			trace( "statusError" );
+			
 			MonsterDebugger.trace(this, event );
 			MonsterDebugger.trace(this, event.target.data );
 		}
 		
-		// - - -
+		// - - - by scopes
 		
-		// basic scope
-		
-		/////////////////////////
-		///////  U S E R  ///////
-		/////////////////////////
+		///////////////////////////
+		///////  B A S I C  ///////
+		///////////////////////////
 		
 		// GET /users/self/feed
 		
@@ -236,10 +245,6 @@ package instagrAS3
 			requestData( API_URL + "users/" + userID + "/media/recent/", "GET", null, params );
 		}
 		
-		///////////////////////////
-		///////  M E D I A  ///////
-		///////////////////////////
-		
 		// GET /media/{media-id}
 		
 		public function getPhoto( photoID:String, params:String="" ):void
@@ -263,10 +268,6 @@ package instagrAS3
 			_dataType = PHOTO_POPULAR;
 			requestData( API_URL + "media/popular/" );
 		}
-		
-		/////////////////////////////////
-		///////  L O C A T I O N  ///////
-		/////////////////////////////////
 		
 		// GET /locations/{location-id}
 		
@@ -292,10 +293,6 @@ package instagrAS3
 			requestData( API_URL + "locations/search/", "GET", null, params );
 		}
 		
-		/////////////////////////
-		///////  T A G S  ///////
-		/////////////////////////
-		
 		// GET /tags/{tag-name}
 		
 		public function getTag( tagID:String, params:String="" ):void
@@ -320,21 +317,17 @@ package instagrAS3
 			requestData( API_URL + "tags/search/", "GET", null, params );
 		}
 		
+		// GET /geographies/{id}/media/recent
 		
-		///////////////////////////////////
-		///////  G E O G R A P H Y  ///////
-		///////////////////////////////////
+		public function getGeographyRecent( id:String="", params:String = "" ):void
+		{
+			_dataType = GEOGRAPHY_RECENT;
+			requestData( API_URL + "geographies/" + id + "/media/recent/", "GET", null, params );
+		}
 		
-		// GET /geographies/{media-id}/media/recent
-		
-		
-		
-		
-		
-		
-		
-		// extended scopes required
-		
+		/////////////////////////////////////////
+		///////  R E L A T I O N S H I P  ///////
+		/////////////////////////////////////////
 		
 		// ---- scope = relationship
 		// GET /users/{user-id}/follows
@@ -343,12 +336,18 @@ package instagrAS3
 		// GET /users/{user-id}/relationship
 		// POST /users/{user-id}/relationship
 		
+		/////////////////////////////////
+		///////  C O M M E N T S  ///////
+		/////////////////////////////////
 		
 		// ---- scope = comments
 		// GET /media/{media-id}/comments
 		// POST /media/{media-id}/comments
 		// DELETE /media/{media-id}/comments/{comment-id}
 		
+		/////////////////////////
+		///////  L I K E  ///////
+		/////////////////////////
 		
 		// ---- scope = like
 		// GET /media/{media-id}/likes/
