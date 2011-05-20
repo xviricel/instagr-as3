@@ -2,8 +2,9 @@ package instagrAS3.data.items
 {
 	/**
 	 * ...
-	 * @author 
+	 * @author pbordachar
 	 */
+	
 	public class Tag
 	{
 		private var _count:int;

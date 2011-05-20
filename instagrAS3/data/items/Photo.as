@@ -1,15 +1,17 @@
 package instagrAS3.data.items
 {
-
+	/**
+	 * ...
+	 * @author pbordachar
+	 */
+	
 	public class Photo
 	{
 		public const THB:int = 150;
 		public const LOW:int = 306;
 		public const STD:int = 612;
 		
-		
-		
-		
+
 		private var _id:String;
 		private var _type:String;
 		private var _filter:String;

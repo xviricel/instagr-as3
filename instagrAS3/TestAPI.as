@@ -73,20 +73,22 @@ package instagrAS3
 			itgLogo.y = 10;
 			addChild( itgLogo );
 			
-			var getUser:PushButton = new PushButton(this, 20, 80, "Get User", itgGetUser );
-			var getFeed:PushButton = new PushButton(this, 20, 110, "Self Feed", itgGetFeed );
-			var getPhoto:PushButton = new PushButton(this, 20, 140, "Get Photo", itgGetPhoto );
-			var getUserRecent:PushButton = new PushButton(this, 20, 170, "User Recent", itgGetUserRecent );
-			var getUserSearch:PushButton = new PushButton(this, 20, 200, "User search", itgGetUserSearch );
-			var getPhotoSearch:PushButton = new PushButton(this, 20, 230, "Photo search", itgGetPhotoSearch );
-			var getPopular:PushButton = new PushButton(this, 20, 260, "Most Popular", itgGetPopular );
-			var getLocation:PushButton = new PushButton(this, 20, 290, "Get Location", itgGetLocation );
-			var getLocationRecent:PushButton = new PushButton(this, 20, 320, "Location Recent", itgGetLocationRecent );
-			var getLocationSearch:PushButton = new PushButton(this, 20, 350, "Location search", itgGetLocationSearch );
-			var getTag:PushButton = new PushButton(this, 20, 380, "Get Tag", itgGetTag );
-			var getTagRecent:PushButton = new PushButton(this, 20, 410, "Tag Recent", itgGetTagRecent );
-			var getTagSearch:PushButton = new PushButton(this, 20, 440, "Tag search", itgGetTagSearch );
-			
+			var btn:PushButton;
+			btn = new PushButton(this, 20, 80, "User Infos", itgGetUser );
+			btn = new PushButton(this, 20, 110, "Self Feed", itgGetFeed );
+			btn = new PushButton(this, 20, 140, "Photo Infos", itgGetPhoto );
+			btn = new PushButton(this, 20, 170, "User Recent", itgGetUserRecent );
+			btn = new PushButton(this, 20, 200, "User Search", itgGetUserSearch );
+			btn = new PushButton(this, 20, 230, "Photo Search", itgGetPhotoSearch );
+			btn = new PushButton(this, 20, 260, "Most Popular", itgGetPopular );
+			btn = new PushButton(this, 20, 290, "Location Infos", itgGetLocation );
+			btn = new PushButton(this, 20, 320, "Location Recent", itgGetLocationRecent );
+			btn = new PushButton(this, 20, 350, "Location search", itgGetLocationSearch );
+			btn = new PushButton(this, 20, 380, "Tag Infos", itgGetTag );
+			btn = new PushButton(this, 20, 410, "Tag Recent", itgGetTagRecent );
+			btn = new PushButton(this, 20, 440, "Tag search", itgGetTagSearch );
+			btn = new PushButton(this, 20, 470, "Geography Recent", itgGetGeographyRecent );
+
 			_container = new Sprite();
 			_container.x = 260;
 			_container.y = 220;
@@ -210,10 +212,12 @@ package instagrAS3
 		{
 			clear();
 			
+			var coord:Array = GeographicData.getLatLng( GeographicData.USA_SAN_FRANCISCO_CA );
+			
 			var latitude:Label = new Label( _container, 10, 10, "latitude" );
-			var lat:InputText = new InputText(_container, 10, 30, "43.500" );
+			var lat:InputText = new InputText(_container, 10, 30, coord[ 0 ] );
 			var longitude:Label = new Label( _container, 10, 50, "longitude" );
-			var long:InputText = new InputText(_container, 10, 70, "-1.467" ); // bayonne
+			var long:InputText = new InputText(_container, 10, 70, coord[ 1 ] );
 			var distance:Label = new Label( _container, 10, 90, "distance" );
 			var dist:InputText = new InputText(_container, 10, 110, "" );
 			var max2:Label = new Label( _container, 10, 130, "max TS" );
@@ -401,27 +405,40 @@ package instagrAS3
 			}			
 		}
 		
-		
-		
 		// Get most recent media from a geography subscription that you created
 		
-		
+		private function itgGetGeographyRecent( e:Event ):void
+		{
+			clear();
+			
+			var label:Label = new Label( _container, 10, 10, "Geo ID" );
+			var geoID:InputText = new InputText(_container, 10, 30, "555" );
+			var sendBtn:PushButton = new PushButton ( _container, 120, 28, "SEND", send )
+			
+			function send():void
+			{
+				itgCall( "getGeographyRecent", [ geoID.text ]);
+			}			
+		}
 		
 		// TODO / extended scope
-
+		
+		// likes
 		// Get a list of users who have liked this media.
 		// Set a like on this media by the currently authenticated user.
 		// Remove a like on this media by the currently authenticated user.
-		
-		// Get information about a tag object.
-		// Get a list of recently tagged media.
-		// Search for tags by name.
-		
+
+		// comments
 		// Get a full list of comments on a media.
 		// Create a comment on a media.
 		// Remove a comment either on the authenticated user's media or authored by the authenticated user.
 		
-		
+		// relationships
+		// Get the list of users this user follows.
+		// Get the list of users this user is followed by.
+		// List the users who have requested this user's permission to follow
+		// Get information about the current user's relationship (follow/following/etc) to another user.
+		// Modify the relationship between the current user and the target user
 		
 		///////////////////////////
 		///////  C A L L S  ///////
@@ -469,6 +486,9 @@ package instagrAS3
 					break;
 				case "getTagSearch":
 					_instagram.getTagSearch( args[0] );
+					break;
+				case "getGeographyRecent":
+					_instagram.getGeographyRecent( args[0] );
 					break;
 				
 			}

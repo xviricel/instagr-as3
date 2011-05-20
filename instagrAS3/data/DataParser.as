@@ -9,6 +9,10 @@ package instagrAS3.data
 	
 	import flash.net.SharedObject;
 
+	/**
+	 * ...
+	 * @author pbordachar
+	 */
 	
 	public class DataParser
 	{			
@@ -119,10 +123,10 @@ package instagrAS3.data
 			photo.low_res = obj.images.low_resolution.url != null ? obj.images.low_resolution.url : "";
 			photo.caption = obj.caption != null ? obj.caption.text : "";
 			photo.link = obj.link;
-			photo.likes = obj.likes.count;
+			photo.likes = obj.location != null ? obj.likes.count : -1;
 			photo.user = getInfosUser( obj.user );
 			photo.location = obj.location != null ? getInfosLocation( obj.location ) : null;
-			photo.tags = obj.tags != null ? parseTagArray( obj.tags ) : null;
+			photo.tags = ( obj.tags != null ) ? obj.tags : null;
 			photo.filter = obj.filter;
 			//photo.comments
 			
